@@ -3,29 +3,31 @@ version: '3'
 services:
 
   mysql:
-    build:
-      context: ./mysql
+    image: lucascience/desafio01-2-mysql
+    command: --innodb-use-native-aio=0
     container_name: db
     networks:
       - app-network
     restart: always
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=nodedb
     volumes:
       - ./mysql/db-app:/var/lib/mysql
 
   node:
-    build:
-      context: ./node
+    image: lucascience/desafio01-2-node
     container_name: app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s node index.js
     networks:
       - app-network
     restart: always
     depends_on:
       - mysql
-    tty: true
 
   nginx:
-    build:
-      context: ./nginx
+    image: lucascience/desafio01-2-nginx
     container_name: proxy
     networks:
       - app-network

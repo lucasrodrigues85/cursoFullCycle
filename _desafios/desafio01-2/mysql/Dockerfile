@@ -1,7 +1,3 @@
-FROM mysql:latest
-
-ENV MYSQL_ROOT_PASSWORD=root
-ENV MYSQL_DATABASE=nodedb
-ENV MYSQL_USER=root
+FROM mysql:5.7
 
 COPY ./scripts/ /docker-entrypoint-initdb.d/

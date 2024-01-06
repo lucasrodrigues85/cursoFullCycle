@@ -4,8 +4,8 @@ const port = process.env.APP_PORT || 3000
 
 const config = {
     host: 'db',
-    user: 'node',
-    password: 'node',
+    user: 'root',
+    password: 'root',
     database: 'nodedb'
 }
 
@@ -14,21 +14,25 @@ const connection = mysql.createConnection(config)
 
 app.get('/', (req, res) => {
 
-    connection.query(`INSERT IGNORE INTO people(name) VALUES('Lucas')`, (error, results, fields) => {
+    const addNames = ['Lucas', 'Maria', 'João'];
+
+    addNames.forEach(nome => {
+        connection.query(`INSERT IGNORE INTO people(name) VALUES(?)`, [nome], (error, results, fields) => {
+            if (error) {
+                console.error('Erro no banco de dados:', error);
+                return res.status(500).json({ error: 'Erro ao inserir ou ignorar registro no banco de dados.' });
+            }
+        });
+    });
+
+    connection.query(`SELECT name FROM people`, (error, results, fields) => {
         if (error) {
-            console.error('Erro no banco de dados:', error);
-            return res.status(500).json({ error: 'Erro ao inserir ou ignorar registro no banco de dados.' });
+            return res.status(500).json({ error: 'Erro ao obter dados do banco de dados.' });
         }
 
-        connection.query(`SELECT name FROM people`, (error, results, fields) => {
-            if (error) {
-                return res.status(500).json({ error: 'Erro ao obter dados do banco de dados.' });
-            }
-
-            res.send(`<h1>Full Cycle Rocks!<h1>
-                    <ol>${!!results.length ? results.map(el => `<li>${el.name}</li>`).join('') : ''}</ol>`)
-        })
-    })
+        res.send(`<h1>Full Cycle Rocks!<h1>
+                <ol>${!!results.length ? results.map(el => `<li>${el.name}</li>`).join('') : ''}</ol>`);
+    });
 })
 
 // Porta do servidor
