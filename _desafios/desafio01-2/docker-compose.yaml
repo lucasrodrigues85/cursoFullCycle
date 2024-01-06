@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+
+  mysql:
+    build:
+      context: ./mysql
+    container_name: db
+    networks:
+      - app-network
+    restart: always
+    volumes:
+      - ./mysql/db-app:/var/lib/mysql
+
+  node:
+    build:
+      context: ./node
+    container_name: app
+    networks:
+      - app-network
+    restart: always
+    depends_on:
+      - mysql
+    tty: true
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: proxy
+    networks:
+      - app-network
+    restart: always
+    ports: 
+      - "8080:80"
+    depends_on:
+      - node
+
+networks:
+  app-network:
+    driver: bridge
