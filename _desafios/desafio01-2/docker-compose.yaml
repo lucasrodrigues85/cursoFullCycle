@@ -10,7 +10,6 @@ services:
       - app-network
     restart: always
     environment:
-      - MYSQL_USER=root
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=nodedb
     volumes:
@@ -23,6 +22,8 @@ services:
     networks:
       - app-network
     restart: always
+    volumes:
+      - ./node:/app
     depends_on:
       - mysql
 

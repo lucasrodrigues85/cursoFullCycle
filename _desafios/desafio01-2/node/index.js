@@ -9,7 +9,7 @@ const config = {
     database: 'nodedb'
 }
 
-const mysql = require('mysql2')
+const mysql = require('mysql')
 const connection = mysql.createConnection(config)
 
 app.get('/', (req, res) => {
