@@ -16,7 +16,8 @@ services:
       - ./mysql/db-app:/var/lib/mysql
 
   node:
-    image: lucascience/desafio01-2-node
+    build:
+      context: ./node
     container_name: app
     entrypoint: dockerize -wait tcp://db:3306 -timeout 20s node index.js
     networks:
